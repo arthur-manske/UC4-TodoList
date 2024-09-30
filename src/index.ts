@@ -239,7 +239,7 @@ function mainMenu(taskQueue: TaskQueue): void
 			}
 
 			break;
-		case '4': {
+		case '4': { /* abertura de escopo para criar variáveis dentro do case */
 			let next = taskQueue.peek();
 			if (next) {
 				console.log(next.toString());
@@ -249,7 +249,7 @@ function mainMenu(taskQueue: TaskQueue): void
 			}
 
 			break; }
-		case '5': {
+		case '5': { /* abertura de escopo para criar variáveis dentro do case */
 			const task = taskQueue.nextPending();
 
 			if (task) {
