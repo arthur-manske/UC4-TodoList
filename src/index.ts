@@ -12,11 +12,11 @@ enum TaskStatus {
 	Pending   = 'Pendente',
 	Completed = 'Completa'
 };
-	
-/* REGEX para capitalizar qualquer palavra de uma string */
-function capitalizeWords(str: string): string { return str.toLowerCase().replace(/\b\w/g, char => char.toUpperCase()); }
 
 class TaskPriorityUtils {
+	/* REGEX para capitalizar qualquer palavra de uma string */
+	private static capitalizeWords(str: string): string { return str.toLowerCase().replace(/\b\w/g, char => char.toUpperCase()); }
+
 	/* Pergunta por uma prioridade de tarefa ao usuário */
 	public static askTaskPriority(message: string): TaskPriority
 	{
@@ -25,7 +25,7 @@ class TaskPriorityUtils {
 
 		message += `(${options.join(', ')}): `;  /* Adiciona as opções válidas e ':' como separador na mensagem de pergunta */
 
-		return capitalizeWords(rlSync.question(
+		return TaskPriorityUtils.capitalizeWords(rlSync.question(
 			message, {
 				caseSensitive: false, /* Desativa a diferenciação entre maiúsculo e minúsculo */
 				limit: options,       /* Torna válido apenas valores corretos para prioridades de tarefa */
