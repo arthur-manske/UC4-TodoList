@@ -3,7 +3,7 @@ import * as rlSync from 'readline-sync';
 enum TaskPriority {
 	Lowest   = 'Muito Baixa',
 	Low      = 'Baixa',
-	Medium   = 'Média',
+	Medium   = 'Media',
 	High     = 'Alta',
 	Critical = 'Muito Alta'
 };
@@ -21,7 +21,7 @@ class TaskPriorityUtils {
 	public static askTaskPriority(message: string): TaskPriority
 	{
 		let choosen = '';
-		let options = ['Muito Baixa', 'Baixa', 'Média', 'Alta', 'Muito Alta'];
+		let options = ['Muito Baixa', 'Baixa', 'Media', 'Alta', 'Muito Alta'];
 
 		message += `(${options.join(', ')}): `;  /* Adiciona as opções válidas e ':' como separador na mensagem de pergunta */
 
@@ -29,7 +29,7 @@ class TaskPriorityUtils {
 			message, {
 				caseSensitive: false, /* Desativa a diferenciação entre maiúsculo e minúsculo */
 				limit: options,       /* Torna válido apenas valores corretos para prioridades de tarefa */
-				limitMessage: `Por favor, escolha uma prioridade válida.` /* Mensagem para erros */ 
+				limitMessage: `Por favor, escolha uma prioridade valida.` /* Mensagem para erros */ 
 			}
 		)) as TaskPriority;
 	}
@@ -131,7 +131,7 @@ class TaskQueue extends Queue<Task> {
 		this.forEach(task => {
 			if (task.getStatus() !== TaskStatus.Completed) {
 				console.table({
-					'Descrição':  task.getDescription(),
+					'Descricao':  task.getDescription(),
 					'Prioridade': task.getPriority(),
 					'Status':     task.getStatus()
 				});
@@ -140,10 +140,10 @@ class TaskQueue extends Queue<Task> {
 		}); 
 		
 		if (!hasPrintedOne)
-			console.warn('Não há notas concluídas na fila.');
+			console.warn('Nao ha notas concluidas na fila.');
 	}
 
-	/* Lista apenas o que não estiver pendente */
+	/* Lista apenas o que nao estiver pendente */
 	public listCompleted(): void
 	{
 		let hasPrintedOne = false;
@@ -151,7 +151,7 @@ class TaskQueue extends Queue<Task> {
 		this.forEach(task => {
 			if (task.getStatus() === TaskStatus.Completed) {
 				console.table({
-					'Descrição':  task.getDescription(),
+					'Descricao':  task.getDescription(),
 					'Prioridade': task.getPriority(),
 					'Status':     task.getStatus()
 				});
@@ -160,14 +160,14 @@ class TaskQueue extends Queue<Task> {
 		}); 
 
 		if (!hasPrintedOne)
-			console.warn('Não há notas pendentes na fila.');
+			console.warn('Nao ha notas pendentes na fila.');
 	}
 
 	/* Lista o que estiver concluído e depois o que estiver pendente */
 	public list(): void
 	{
 		if (this.length === 0) {
-			console.warn('Não há notas na fila.');
+			console.warn('Nao ha notas na fila.');
 			return;
 		}
 
@@ -187,17 +187,17 @@ function mainMenu(taskQueue: TaskQueue): void
 			'----------------- TODO LIST ----------------\n' +
 			'- 0.  Sair                                 -\n' +
 			'- 1.  Adicionar tarefa                     -\n' +
-			'- 2.  Marcar próxima tarefa como concluída -\n' +
+			'- 2.  Marcar proxima tarefa como concluida -\n' +
 			'- 3.  Remover primeira tarefa              -\n' +
 			'- 4.  Exibir primeira tarefa               -\n' +
-			'- 5.  Exibir próxima tarefa                -\n' +
+			'- 5.  Exibir proxima tarefa                -\n' +
 			'- 6.  Listar todas as tarefas              -\n' +
 			'- 7.  Listar apenas as tarefas pendentes   -\n' +
-			'- 8.  Listar apenas as tarefas concluídas  -\n' +
+			'- 8.  Listar apenas as tarefas concluidas  -\n' +
 			'- 9.  Inverter ordem da lista              -\n' +
 			'- 10. Limpar lista                         -\n' +
 			'----------------- TODO LIST ----------------\n' +
-			'Opção selecionada: '
+			'Opcao selecionada: '
 		);
 
 		switch (option) {
@@ -206,14 +206,14 @@ function mainMenu(taskQueue: TaskQueue): void
 			continue;
 		case '1': { /* abertura de escopo para criar variáveis dentro do case */
 			let task = new Task(
-				rlSync.question('Descrição da Tarefa: '),
+				rlSync.question('Descricao da Tarefa: '),
 				TaskPriorityUtils.askTaskPriority('Prioridade da Tarefa'),
 				TaskStatus.Pending
 			);
 
 			try {
 				taskQueue.enqueue(task);
-				console.info('Operação concluída com sucesso!');
+				console.info('Operacao concluida com sucesso!');
 			} catch(e) {
 				/* provavelmente falta de memória */
 				console.error('Um erro ocorreu:', (e as Error).message);
@@ -225,17 +225,17 @@ function mainMenu(taskQueue: TaskQueue): void
 			
 			if (task) {
 				task.setStatus(TaskStatus.Completed);
-				console.info('Operação concluída com sucesso!');
+				console.info('Operacao concluida com sucesso!');
 			} else {
-				console.warn('Não há tarefas para concluir.');
+				console.warn('Nao ha tarefas para concluir.');
 			}
 
 			break; }
 		case '3':
 			if (taskQueue.dequeue()) {
-				console.info('Operação concluída com sucesso!');
+				console.info('Operacao concluida com sucesso!');
 			} else {
-				console.warn('Não há tarefas para remover.'); 
+				console.warn('Nao ha tarefas para remover.'); 
 			}
 
 			break;
@@ -243,9 +243,9 @@ function mainMenu(taskQueue: TaskQueue): void
 			let next = taskQueue.peek();
 			if (next) {
 				console.log(next.toString());
-				console.info('Operação concluída com sucesso!');
+				console.info('Operacao concluida com sucesso!');
 			} else {
-				console.warn('Não há tarefas para remover.'); 
+				console.warn('Nao ha tarefas para remover.'); 
 			}
 
 			break; }
@@ -254,9 +254,9 @@ function mainMenu(taskQueue: TaskQueue): void
 
 			if (task) {
 				console.log(task.toString());
-				console.info('Operação concluída com sucesso!');
+				console.info('Operacao concluida com sucesso!');
 			} else {
-				console.warn('Não há tarefas para remover.'); 
+				console.warn('Nao ha tarefas para remover.'); 
 			}
 
 			break; }
@@ -272,7 +272,7 @@ function mainMenu(taskQueue: TaskQueue): void
 		case '9':
 			try {
 				taskQueue.reverse();
-				console.info('Operação concluída com sucesso!')
+				console.info('Operacao concluida com sucesso!')
 			} catch(e) {
 				console.error('Um erro ocorreu:', (e as Error).message);
 			}
@@ -281,7 +281,7 @@ function mainMenu(taskQueue: TaskQueue): void
 		case '10':
 			try {
 				taskQueue.clear();
-				console.info('Operação concluída com sucesso!');
+				console.info('Operacao concluida com sucesso!');
 			} catch(e) {
 				/* dificilmente um erro será jogado por excluir um array */
 				console.error('Um erro ocorreu:', (e as Error).message);
