@@ -12,6 +12,28 @@ enum TaskStatus {
 	Pending   = 'Pendente',
 	Completed = 'Completa'
 };
+	
+/* REGEX para capitalizar qualquer palavra de uma string */
+function capitalizeWords(str: string): string { return str.toLowerCase().replace(/\b\w/g, char => char.toUpperCase()); }
+
+class TaskPriorityUtils {
+	/* Pergunta por uma prioridade de tarefa ao usuário */
+	public static askTaskPriority(message: string): TaskPriority
+	{
+		let choosen = '';
+		let options = ['Muito Baixa', 'Baixa', 'Média', 'Alta', 'Muito Alta'];
+
+		message += `(${options.join(', ')}): `;  /* Adiciona as opções válidas e ':' como separador na mensagem de pergunta */
+
+		return capitalizeWords(rlSync.question(
+			message, {
+				caseSensitive: false, /* Desativa a diferenciação entre maiúsculo e minúsculo */
+				limit: options,       /* Torna válido apenas valores corretos para prioridades de tarefa */
+				limitMessage: `Por favor, escolha uma prioridade válida.` /* Mensagem para erros */ 
+			}
+		)) as TaskPriority;
+	}
+};
 
 class Task {
 	public constructor(
@@ -75,8 +97,9 @@ class TaskQueue extends Queue<Task> {
 	/* retorna a próxima tarefa pendente */
 	public nextPending(): Task | undefined
 	{
-		if (this.peek() && this.peek().getStatus() !== TaskStatus.Completed)
-			return this.peek();
+		let next = this.peek();
+		if (next && next.getStatus() !== TaskStatus.Completed)
+			return next; 
 
 		/* Tenta achar o primeiro indíce não concluído */
 		return this.items[
@@ -88,8 +111,9 @@ class TaskQueue extends Queue<Task> {
 	/* retorna a primeira tarefa concluída */
 	public nextCompleted(): Task | undefined
 	{
-		if (this.peek() && this.peek().getStatus() === TaskStatus.Completed)
-			return this.peek();
+		let next = this.peek();
+		if (next && next.getStatus() === TaskStatus.Completed)
+			return next; 
 
 		/* Tenta achar o primeiro indíce concluído */
 		return this.items[
@@ -152,27 +176,6 @@ class TaskQueue extends Queue<Task> {
 	}
 };
 
-/* REGEX para capitalizar qualquer palavra de uma string */
-function capitalizeWords(str: string): string { return str.toLowerCase().replace(/\b\w/g, char => char.toUpperCase()); }
-
-/* Pergunta por uma prioridade de tarefa ao usuário */
-function askTaskPriority(message: string): TaskPriority
-{
-	let choosen = '';
-	let options = ['Muito Baixa', 'Baixa', 'Média', 'Alta', 'Muito Alta'];
-
-	message += `(${options.join(', ')}): `;  /* Adiciona as opções válidas e ':' como separador na mensagem de pergunta */
-
-	return capitalizeWords(rlSync.question(
-		message, {
-			caseSensitive: false, /* Desativa a diferenciação entre maiúsculo e minúsculo */
-			limit: options,       /* Torna válido apenas valores corretos para prioridades de tarefa */
-			limitMessage: `Por favor, escolha uma prioridade válida.` /* Mensagem para erros */ 
-		}
-	)) as TaskPriority;
-}
-
-
 /* menu principal do programa */
 function mainMenu(taskQueue: TaskQueue): void
 {
@@ -204,7 +207,7 @@ function mainMenu(taskQueue: TaskQueue): void
 		case '1': { /* abertura de escopo para criar variáveis dentro do case */
 			let task = new Task(
 				rlSync.question('Descrição da Tarefa: '),
-				askTaskPriority('Prioridade da Tarefa'),
+				TaskPriorityUtils.askTaskPriority('Prioridade da Tarefa'),
 				TaskStatus.Pending
 			);
 
@@ -213,7 +216,7 @@ function mainMenu(taskQueue: TaskQueue): void
 				console.info('Operação concluída com sucesso!');
 			} catch(e) {
 				/* provavelmente falta de memória */
-				console.error('Um erro ocorreu:', e.message);
+				console.error('Um erro ocorreu:', (e as Error).message);
 			}
 
 			break; }
@@ -236,15 +239,16 @@ function mainMenu(taskQueue: TaskQueue): void
 			}
 
 			break;
-		case '4':
-			if (taskQueue.peek()) {
-				console.log(taskQueue.peek().toString());
+		case '4': {
+			let next = taskQueue.peek();
+			if (next) {
+				console.log(next.toString());
 				console.info('Operação concluída com sucesso!');
 			} else {
 				console.warn('Não há tarefas para remover.'); 
 			}
 
-			break;
+			break; }
 		case '5': {
 			const task = taskQueue.nextPending();
 
@@ -270,7 +274,7 @@ function mainMenu(taskQueue: TaskQueue): void
 				taskQueue.reverse();
 				console.info('Operação concluída com sucesso!')
 			} catch(e) {
-				console.error('Um erro ocorreu:', e.message);
+				console.error('Um erro ocorreu:', (e as Error).message);
 			}
 
 			break;
@@ -280,7 +284,7 @@ function mainMenu(taskQueue: TaskQueue): void
 				console.info('Operação concluída com sucesso!');
 			} catch(e) {
 				/* dificilmente um erro será jogado por excluir um array */
-				console.error('Um erro ocorreu:', e.message);
+				console.error('Um erro ocorreu:', (e as Error).message);
 			}
 
 			break;
