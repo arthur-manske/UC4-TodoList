@@ -167,7 +167,7 @@ function askTaskPriority(message: string): TaskPriority
 		message, {
 			caseSensitive: false, /* Desativa a diferenciação entre maiúsculo e minúsculo */
 			limit: options,       /* Torna válido apenas valores corretos para prioridades de tarefa */
-			limitMessage: message /* Repete a mensagem em caso de erro */ 
+			limitMessage: `Por favor, escolha uma prioridade válida.` /* Mensagem para erros */ 
 		}
 	)) as TaskPriority;
 }
